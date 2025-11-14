@@ -6,6 +6,11 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <PlatformTarget>ARM64</PlatformTarget>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageId>Avans.StatisticalRobot</PackageId>
+    <Version>1.1.0</Version>
+    <Authors>Marcel</Authors>
+    <Company>Avans Hogeschool</Company>    
   </PropertyGroup>
 
   <ItemGroup>
