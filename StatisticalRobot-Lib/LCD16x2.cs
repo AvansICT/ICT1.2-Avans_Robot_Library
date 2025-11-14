@@ -74,5 +74,11 @@ namespace Avans.StatisticalRobot
                 Device.WriteByteRegister(0x40, (byte)c);
             }
         }
+
+        public void Clear()
+        {
+            TextCommand(0x01); // clear display
+            Thread.Sleep(50);
+        }
     }
 }
