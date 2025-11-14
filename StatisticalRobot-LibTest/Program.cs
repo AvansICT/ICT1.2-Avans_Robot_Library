@@ -52,6 +52,8 @@ Robot.Motors(100, 100);
 Robot.Wait(1000);
 Robot.Motors(0, 0);
 
+RGBSensor rgbSensor = new RGBSensor(RGBSensor.DEFAULT_I2C_ADDRESS, RGBSensor.IntegrationTime.INTEGRATION_TIME_700MS, RGBSensor.Gain.GAIN_1X);
+
 // De hoofdlus van het programma, deze blijft zich herhalen.
 while (true)
 {
@@ -85,6 +87,9 @@ while (true)
     Console.WriteLine($"Romi Knoppen: A={aButton}, B={bButton}, C={cButton}");
     short[] encoders = Robot.ReadEncoders();
     Console.WriteLine($"Encoders: Links={encoders[0]}, Rechts={encoders[1]}");
+
+    rgbSensor.GetRawData(out ushort r, out ushort g, out ushort b, out ushort c);
+    Console.WriteLine("Channels: r: " + r + " g: " + g + " b: " + b);
 
     // Wacht 1 seconde voordat de lus opnieuw wordt uitgevoerd.
     Robot.Wait(1000);
