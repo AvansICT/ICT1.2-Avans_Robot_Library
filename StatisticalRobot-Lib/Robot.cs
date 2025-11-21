@@ -7,17 +7,21 @@ using System.Runtime.CompilerServices;
 
 namespace Avans.StatisticalRobot;
 
-public static class Robot {
+public static class Robot
+{
 
     private static I2cBus i2cBus = I2cBus.Create(1);
     private static I2cDevice romi32u4 = i2cBus.CreateDevice(0x14);
     //This is the address 0x04 for the grovePi
     private static I2cDevice grovePiAnalog = i2cBus.CreateDevice(0x04);
 
+    private static Mutex mut = new Mutex();
+
+
     private static GpioController gpioController = new();
     private static PwmChannel? pwm;
     private static long stopwatchTicksPerUs = (long)(Stopwatch.Frequency * 0.000_001);
-  static Robot()
+    static Robot()
     {
         byte grovePiAddress = 0x04;
 
@@ -80,12 +84,15 @@ public static class Robot {
     /// <returns>A formatted list of objects</returns>
     private static object[] ReadUnpack(int address, int size, string format)
     {
-        
+        mut.WaitOne();
         romi32u4.WriteByte((byte)address);
-
+        mut.ReleaseMutex();
         // Lees de gegevens in de buffer
         byte[] readBuffer = new byte[size];
+
+        mut.WaitOne();
         romi32u4.Read(readBuffer);
+        mut.ReleaseMutex();
 
         return StructConverter.Unpack(format, readBuffer);
     }
@@ -100,7 +107,9 @@ public static class Robot {
         byte[] writeBuffer = StructConverter.Pack(data)
             .Prepend((byte)address)
             .ToArray();
+        mut.WaitOne();
         romi32u4.Write(writeBuffer);
+        mut.ReleaseMutex();
     }
 
     public static ComponentInformation GetQueryComponentInformation()
@@ -114,13 +123,14 @@ public static class Robot {
     /// </summary>
     /// <param name="address">Register address</param>
     /// <param name="data">Byte list</param>
-    private static void WriteRaw(int address, byte[] data) 
+    private static void WriteRaw(int address, byte[] data)
     {
         byte[] writeBuffer = data.Prepend((byte)address)
             .ToArray();
 
+        mut.WaitOne();
         romi32u4.Write(writeBuffer);
-
+        mut.ReleaseMutex();
     }
 
     /// <summary>
@@ -154,7 +164,7 @@ public static class Robot {
     /// <param name="speedRight">Speed right motor</param>
     public static void Motors(short speedLeft, short speedRight)
     {
-        WritePack(6,speedLeft,speedRight);
+        WritePack(6, speedLeft, speedRight);
     }
 
     /// <summary>
@@ -163,7 +173,7 @@ public static class Robot {
     /// <returns>List with bools if button is pressed or not</returns>
     public static bool[] ReadButtons()
     {
-        return ReadUnpack(3,3,"???")
+        return ReadUnpack(3, 3, "???")
             .OfType<bool>()
             .ToArray();
     }
@@ -174,7 +184,7 @@ public static class Robot {
     /// <returns>The value in millivolts</returns>
     public static ushort ReadBatteryMillivolts()
     {
-        return ReadUnpack(10,2,"H")
+        return ReadUnpack(10, 2, "H")
             .OfType<ushort>()
             .FirstOrDefault((ushort)0);
     }
@@ -195,24 +205,24 @@ public static class Robot {
     /// <returns>The position of the weels</returns>
     public static short[] ReadEncoders()
     {
-        return ReadUnpack(39,4,"hh")
+        return ReadUnpack(39, 4, "hh")
             .OfType<short>()
             .ToArray();
     }
 
-    public static I2cDevice CreateI2cDevice(byte address) 
+    public static I2cDevice CreateI2cDevice(byte address)
     {
         return i2cBus.CreateDevice(address);
-    } 
+    }
 
-    public static void SetDigitalPinMode(int pinNumber,PinMode state)
+    public static void SetDigitalPinMode(int pinNumber, PinMode state)
     {
-        gpioController.OpenPin(pinNumber,state);
+        gpioController.OpenPin(pinNumber, state);
     }
 
     public static void WriteDigitalPin(int pinNumber, PinValue value)
     {
-        gpioController.Write(pinNumber,value);
+        gpioController.Write(pinNumber, value);
     }
 
     public static PinValue ReadDigitalPin(int pinNumber)
@@ -226,13 +236,13 @@ public static class Robot {
     /// <param name="frequency"></param>
     /// <param name="dutyCyclePercentage"></param>
     /// <exception cref="ArgumentOutOfRangeException"></exception>
-    public static void SetPwmPin(int frequency, double dutyCyclePercentage )
+    public static void SetPwmPin(int frequency, double dutyCyclePercentage)
     {
-        if(dutyCyclePercentage < 0 || dutyCyclePercentage > 1) 
+        if (dutyCyclePercentage < 0 || dutyCyclePercentage > 1)
         {
             throw new ArgumentOutOfRangeException("Duty Cycle needs to be between 0.0 and 1.0");
         }
-        pwm = PwmChannel.Create(0,0,frequency,dutyCyclePercentage);
+        pwm = PwmChannel.Create(0, 0, frequency, dutyCyclePercentage);
     }
 
     public static void ChangePwmFrequency(int frequency)
@@ -254,7 +264,7 @@ public static class Robot {
         {
             grovePiAnalog.WriteRegister((byte)(0x30 + analogPin));
             byte[] readBuffer = new byte[2];
-            grovePiAnalog.ReadRegister((byte)(0x30+analogPin),readBuffer);
+            grovePiAnalog.ReadRegister((byte)(0x30 + analogPin), readBuffer);
             int value = readBuffer[1] << 8 | readBuffer[0];
             return value;
         }
@@ -276,7 +286,7 @@ public static class Robot {
     [MethodImpl(MethodImplOptions.AggressiveOptimization)]
     public static int PulseIn(int pin, PinValue waitFor, int timeoutms)
     {
-        if(gpioController.Read(pin) == waitFor) 
+        if (gpioController.Read(pin) == waitFor)
         {
             return -2;
         }
@@ -284,23 +294,25 @@ public static class Robot {
         Stopwatch timeoutTimer = Stopwatch.StartNew();
 
         PinValue notWaitFor = !waitFor;
-        while(gpioController.Read(pin) == notWaitFor && timeoutTimer.ElapsedMilliseconds < timeoutms)
+        while (gpioController.Read(pin) == notWaitFor && timeoutTimer.ElapsedMilliseconds < timeoutms)
         {
             // Wait for pulse
         }
 
-        if(timeoutTimer.ElapsedMilliseconds >= timeoutms) {
+        if (timeoutTimer.ElapsedMilliseconds >= timeoutms)
+        {
             return -1;
         }
 
         Stopwatch pulseTimer = Stopwatch.StartNew();
-        while(gpioController.Read(pin) == PinValue.High && timeoutTimer.ElapsedMilliseconds < timeoutms) 
+        while (gpioController.Read(pin) == PinValue.High && timeoutTimer.ElapsedMilliseconds < timeoutms)
         {
             // Wait
         }
         pulseTimer.Stop();
 
-        if(timeoutTimer.ElapsedMilliseconds >= timeoutms) {
+        if (timeoutTimer.ElapsedMilliseconds >= timeoutms)
+        {
             return 0;
         }
 
