@@ -292,7 +292,7 @@ namespace Avans.StatisticalRobot
                     {
                         for (int i = 0; i <= padded.Length - WIDTH; i++)
                         {
-                            ShowFrame(padded.Substring(i, WIDTH), row);
+                            lcd.SetText(row, 0, padded.Substring(i, WIDTH));
                             Thread.Sleep(frameDelayMs ?? this.frameDelayMs);
                         }
                     }
@@ -300,7 +300,7 @@ namespace Avans.StatisticalRobot
                     {
                         for (int i = padded.Length - WIDTH; i >= 0; i--)
                         {
-                            ShowFrame(padded.Substring(i, WIDTH), row);
+                            lcd.SetText(row, 0, padded.Substring(i, WIDTH));
                             Thread.Sleep(frameDelayMs ?? this.frameDelayMs);
 
                         }
@@ -308,14 +308,6 @@ namespace Avans.StatisticalRobot
 
                     Thread.Sleep(pauseBetweenLinesMs ?? this.pauseBetweenLinesMs);
                 }
-            }
-
-            private void ShowFrame(string frame, int row)
-            {
-                lcd.SetCursor(row, 0);
-
-                foreach (char c in frame)
-                    lcd.WriteChar(c);
             }
 
             public enum Direction
