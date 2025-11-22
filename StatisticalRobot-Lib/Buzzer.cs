@@ -35,9 +35,15 @@ public class Buzzer
         }
     }
 
+    /// <summary>
+    /// makes the buzzer beep rithmically with the interval specified in the contructor
+    /// 
+    /// it changes state every interval if you stop calling this while it's state is high it will continue with one indefinite beep
+    /// </summary>
     public void Beep()
     {
         Update();
     }
+    //TODO: add a beep once functions and a stop beep function
 
 }

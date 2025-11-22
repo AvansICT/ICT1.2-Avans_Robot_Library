@@ -24,6 +24,10 @@ public class BlinkLed : IUpdatable
     private DateTime lastBlink = new();
     private PinValue ledState = PinValue.Low;
 
+    /// <summary>
+    /// changes the leds staate from on to off
+    /// when the time specified in the constructor has passed
+    /// </summary>
     public void Update()
     {
         if(DateTime.Now - lastBlink > TimeSpan.FromMilliseconds(_msBlink))

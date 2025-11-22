@@ -32,10 +32,16 @@ namespace Avans.StatisticalRobot
             return -1;
         }
 
+        /// <summary>
+        /// must be called every tick.
+        /// will check if the infrared reflective sensor is getting a reflecion back
+        /// will return PinValue.High (1) if it is reflective and PinValue.Low (0) if it isn't
+        /// </summary>
+        /// <returns>an integer</returns>
         public int Watch()
         {
             return Update();
         }
-
+        //TODO: double check the returns of the sensor
     }
 }

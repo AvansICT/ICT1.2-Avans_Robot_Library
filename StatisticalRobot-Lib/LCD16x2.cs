@@ -22,6 +22,11 @@ namespace Avans.StatisticalRobot
         }
 
         // Set display text \n for second line (or auto wrap)
+
+        /// <summary>
+        /// clears the display and then sets the text of the display
+        /// </summary>
+        /// <param name="text">the text you want to show on the display (use \n for linebreaks)</param>
         public void SetText(string text)
         {
             TextCommand(0x01); // clear display
@@ -48,6 +53,10 @@ namespace Avans.StatisticalRobot
         }
 
         //    // Update the display without erasing the display
+        /// <summary>
+        /// sets the text of the display by overwriting the previous text without clearing it first
+        /// </summary>
+        /// <param name="text">the text you want to show on the display (use \n for linebreaks)</param>
         public void SetTextNoRefresh(string text)
         {
             TextCommand(0x02); // return home
@@ -73,12 +82,6 @@ namespace Avans.StatisticalRobot
                 count++;
                 Device.WriteByteRegister(0x40, (byte)c);
             }
-        }
-
-        public void Clear()
-        {
-            TextCommand(0x01); // clear display
-            Thread.Sleep(50);
         }
     }
 }
