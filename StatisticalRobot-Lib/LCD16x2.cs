@@ -1,84 +1,119 @@
-﻿using System.Device.I2c;
-
-namespace Avans.StatisticalRobot
+﻿namespace Avans.StatisticalRobot
 {
-    public class LCD16x2
+    public class LCD16x2 : AbstractLCD
     {
-        private I2cDevice Device { get; }
+        // Commands
+        private const byte CMD_CLEAR_DISPLAY = 0x01;
+        private const byte CMD_RETURN_HOME = 0x02;
+        private const byte CMD_CURSOR_OFF = 0x04;
+        private const byte CMD_DISPLAY_ON = 0x08;
+        private const byte CMD_2LINE = 0x28;
+        private const byte CMD_WRITE_DATA = 0x40;
+        private const byte CMD_SET_DDRAM_ADDR = 0x80;
 
         /// <summary>
         /// Dit is een I2C device
         /// 3.3V/5V
         /// </summary>
         /// <param name="address">Address for example: 0x3E</param>
-        public LCD16x2(byte address)
+        public LCD16x2(byte address) : base(address, 2, 16)
         {
-            this.Device = Robot.CreateI2cDevice(address);
+            // Initialize the display with default settings
+            TextCommand(CMD_CLEAR_DISPLAY);
+            Thread.Sleep(1);
+
+            TextCommand(CMD_DISPLAY_ON | CMD_CURSOR_OFF);
+            TextCommand(CMD_2LINE);
         }
 
-        private void TextCommand(byte cmd)
+        public override void SetCursor(int line, int characterPosition)
         {
-            Device.WriteByteRegister(0x80, cmd);
+            CheckBounds(line, characterPosition);
+
+            TextCommand((byte)((0x40 * line) + (characterPosition % 0x10) + 0x80));
         }
 
-        // Set display text \n for second line (or auto wrap)
-        public void SetText(string text)
+        public override void SetText(int line, int characterPosition, string text)
         {
-            TextCommand(0x01); // clear display
-            Thread.Sleep(50);
-            TextCommand(0x08 | 0x04); // display on, no cursor
-            TextCommand(0x28); // 2 lines
-            Thread.Sleep(50);
-            int count = 0;
-            int row = 0;
+            CheckBounds(line, characterPosition);
 
+            // Trim text if it exceeds the width of the display
+            if (text.Length > CharsPerLine - characterPosition)
+            {
+                text = text[..(CharsPerLine - characterPosition)];
+            }
+
+            SetCursor(line, characterPosition);
             foreach (char c in text)
             {
-                if (c == '\n' || count == 16)
-                {
-                    count = 0;
-                    row++;
-                    if (row == 2) break;
-                    TextCommand(0xc0);
-                    if (c == '\n') continue;
-                }
-                count++;
-                Device.WriteByteRegister(0x40, (byte)c);
+                WriteChar(c);
             }
         }
 
-        //    // Update the display without erasing the display
-        public void SetTextNoRefresh(string text)
+        public override void SetText(string text)
         {
-            TextCommand(0x02); // return home
+            TextCommand(CMD_CLEAR_DISPLAY);
             Thread.Sleep(50);
-            TextCommand(0x08 | 0x04); // display on, no cursor
-            TextCommand(0x28); // 2 lines
+
+            int count = 0, line = 0;
+            foreach (char c in text)
+            {
+                if (c == '\n' || count == CharsPerLine)
+                {
+                    count = 0;
+                    line++;
+                    if (line == 2) break;
+
+                    SetCursor(line, 0);
+
+                    if (c == '\n') continue;
+                }
+
+                count++;
+                WriteChar(c);
+            }
+        }
+
+        public override void SetTextNoRefresh(string text)
+        {
+            TextCommand(CMD_RETURN_HOME);
             Thread.Sleep(50);
-            int count = 0;
-            int row = 0;
 
             text = text.PadRight(32);
 
+            int count = 0, line = 0;
             foreach (char c in text)
             {
-                if (c == '\n' || count == 16)
+                if (c == '\n' || count == CharsPerLine)
                 {
                     count = 0;
-                    row++;
-                    if (row == 2) break;
-                    TextCommand(0xc0);
+                    line++;
+                    if (line == 2) break;
+
+                    SetCursor(line, 0);
+
                     if (c == '\n') continue;
                 }
+
                 count++;
-                Device.WriteByteRegister(0x40, (byte)c);
+                WriteChar(c);
             }
         }
 
-        public void Clear()
+        public override void Clear()
         {
-            TextCommand(0x01); // clear display
+            TextCommand(CMD_CLEAR_DISPLAY);
             Thread.Sleep(50);
+        }
+
+        private void WriteChar(char c)
+        {
+            TextCommand((byte)c, CMD_WRITE_DATA);
+        }
+
+        private void TextCommand(byte cmd, byte action = CMD_SET_DDRAM_ADDR)
+        {
+            Device.WriteByteRegister(action, cmd);
         }
     }
 }
