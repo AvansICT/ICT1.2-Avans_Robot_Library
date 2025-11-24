@@ -39,6 +39,36 @@ LightSensor lightSensor = new LightSensor(0, 250); // A0
 LCD16x2 lcd = new LCD16x2(0x3E);
 lcd.SetText("Hallo, Robot!");
 
+Robot.Wait(500); // Wacht 500 milliseconden
+
+lcd.Clear();
+lcd.SetCursor(1, 5); // Zet cursor op lijn 1, positie 5
+lcd.SetText("Robot"); // Schrijf "Robot" vanaf die positie
+
+Robot.Wait(2000); // Wacht 2 seconden
+
+// Voorbeeld: Slide show op LCD-scherm
+lcd.SlideText("HELLO WORLD", 0) // "HELLO WORLD" is de text, "0" is de rij
+    .LeftToRight() // Default, hoeft eigenlijk niet meegegeven te worden
+    .Start();
+
+Robot.Wait(2000); // Wacht 2 seconden
+
+// Voorbeeld: Slide show met meerdere regels op LCD-scherm
+var slides = new[]
+{
+    "Dit is een test",
+    "voor het LCD scherm",
+    "van de Statistical Robot",
+    "gemaakt door Avans",
+    "Veel plezier!",
+};
+lcd.SlideShow(slides, 0)
+    .RightToLeft()
+    .SetFrameDelay(400)
+    .SetPauseBetweenLines(1000)
+    .Start(); // Kan ook worden neergezet als .Start(400, 1000);
+
 // Eenmalige actie: zet de LED aan, wacht een halve seconde en zet hem weer uit.
 led.SetOn();
 Robot.Wait(500); // Wacht 500 milliseconden

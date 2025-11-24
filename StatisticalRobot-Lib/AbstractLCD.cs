@@ -4,10 +4,10 @@ namespace Avans.StatisticalRobot
 {
     public abstract class AbstractLCD
     {
-        public int Lines { get; }
-        public int CharsPerLine { get; }
+        public int Lines { get; init; }
+        public int CharsPerLine { get; init; }
 
-        protected I2cDevice Device { get; }
+        protected I2cDevice Device { get; init; }
 
         protected AbstractLCD(byte address, int lines, int charsPerLine)
         {
