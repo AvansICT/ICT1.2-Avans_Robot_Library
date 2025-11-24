@@ -18,19 +18,6 @@ namespace Avans.StatisticalRobot
         }
 
         /// <summary>
-        /// Create a slide show with one text line.
-        /// </summary>
-        /// <param name="text">Text to display in the slide show</param>
-        /// <param name="line">Line on which the slide show will be displayed</param>
-        /// <returns>A slide instance, where you can modify the slide show settings.</returns>
-        /// <exception cref="ArgumentOutOfRangeException"></exception>
-        public LCDSlide SlideText(string text, int line)
-        {
-            CheckBounds(line);
-            return new LCDSlide(this, line, [text]);
-        }
-
-        /// <summary>
         /// Set the cursor position
         /// </summary>
         /// <param name="line">Line of the cursor</param>
@@ -70,6 +57,19 @@ namespace Avans.StatisticalRobot
         /// Clear the display.
         /// </summary>
         public abstract void Clear();
+
+        /// <summary>
+        /// Create a slide show with one text line.
+        /// </summary>
+        /// <param name="text">Text to display in the slide show</param>
+        /// <param name="line">Line on which the slide show will be displayed</param>
+        /// <returns>A slide instance, where you can modify the slide show settings.</returns>
+        /// <exception cref="ArgumentOutOfRangeException"></exception>
+        public LCDSlide SlideText(string text, int line)
+        {
+            CheckBounds(line);
+            return new LCDSlide(this, line, [text]);
+        }
 
         /// <summary>
         /// Create a slide show with multiple text lines.
