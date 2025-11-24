@@ -2,9 +2,9 @@ namespace Avans.StatisticalRobot
 {
     public sealed class LCDSlide
     {
-        private readonly AbstractLCD lcd;
-        private readonly int line;
-        private readonly IEnumerable<string> lines;
+        private readonly AbstractLCD _lcd;
+        private readonly int _line;
+        private readonly IEnumerable<string> _lines;
 
         private Direction direction = Direction.L2R;
         private int frameDelayMs = 300;
@@ -12,9 +12,9 @@ namespace Avans.StatisticalRobot
 
         internal LCDSlide(AbstractLCD lcd, int line, IEnumerable<string> lines)
         {
-            this.lcd = lcd;
-            this.line = line;
-            this.lines = lines;
+            _lcd = lcd;
+            _line = line;
+            _lines = lines;
         }
 
         /// <summary>
@@ -77,24 +77,24 @@ namespace Avans.StatisticalRobot
         /// <param name="pauseBetweenLinesMs">(Optionally) The pause duration in milliseconds between lines.</param>
         public void Start(int? frameDelayMs = null, int? pauseBetweenLinesMs = null)
         {
-            foreach (string line in lines)
+            foreach (string line in _lines)
             {
                 // Pad with spaces so it appears to slide in and out
-                string padded = new string(' ', lcd.CharsPerLine) + line + new string(' ', lcd.CharsPerLine);
+                string padded = new string(' ', _lcd.CharsPerLine) + line + new string(' ', _lcd.CharsPerLine);
 
                 if (direction == Direction.L2R)
                 {
-                    for (int i = 0; i <= padded.Length - lcd.CharsPerLine; i++)
+                    for (int i = 0; i <= padded.Length - _lcd.CharsPerLine; i++)
                     {
-                        lcd.SetText(this.line, 0, padded.Substring(i, lcd.CharsPerLine));
+                        _lcd.SetText(_line, 0, padded.Substring(i, _lcd.CharsPerLine));
                         Thread.Sleep(frameDelayMs ?? this.frameDelayMs);
                     }
                 }
                 else
                 {
-                    for (int i = padded.Length - lcd.CharsPerLine; i >= 0; i--)
+                    for (int i = padded.Length - _lcd.CharsPerLine; i >= 0; i--)
                     {
-                        lcd.SetText(this.line, 0, padded.Substring(i, lcd.CharsPerLine));
+                        _lcd.SetText(_line, 0, padded.Substring(i, _lcd.CharsPerLine));
                         Thread.Sleep(frameDelayMs ?? this.frameDelayMs);
 
                     }

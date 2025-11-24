@@ -11,10 +11,10 @@ namespace Avans.StatisticalRobot
 
         protected AbstractLCD(byte address, int lines, int charsPerLine)
         {
-            this.Lines = lines;
-            this.CharsPerLine = charsPerLine;
+            Lines = lines;
+            CharsPerLine = charsPerLine;
 
-            this.Device = Robot.CreateI2cDevice(address);
+            Device = Robot.CreateI2cDevice(address);
         }
 
         /// <summary>
