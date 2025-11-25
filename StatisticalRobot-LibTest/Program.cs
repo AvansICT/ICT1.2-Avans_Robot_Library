@@ -54,6 +54,10 @@ Robot.Motors(0, 0);
 
 RGBSensor rgbSensor = new RGBSensor(RGBSensor.DEFAULT_I2C_ADDRESS, RGBSensor.IntegrationTime.INTEGRATION_TIME_700MS, RGBSensor.Gain.GAIN_1X);
 
+//Speaker plus test
+Speaker speaker = new Speaker(26);
+int[] bassNotes = { 1911, 1702, 1516, 1431, 1275, 1136, 1012 };
+speaker.PlaySequence(bassNotes);
 // De hoofdlus van het programma, deze blijft zich herhalen.
 while (true)
 {
