@@ -47,6 +47,12 @@ led.SetOff();
 // Eenmalige actie: speel een deuntje op de Romi's ingebouwde buzzer.
 Robot.PlayNotes("o4l16ceg>c");
 
+// Eenmalige actie: laat de gas sensor preheaten, wacht 5 seconden, stop met preheaten en verzamel de data.
+MultichannelGasSensor gasSensor = new MultichannelGasSensor();
+gasSensor.Preheat();
+Robot.Wait(5000);
+gasSensor.StopPreheat();
+
 // Eenmalige actie: laat de robot een klein stukje vooruit rijden en dan stoppen.
 Robot.Motors(100, 100);
 Robot.Wait(1000);
@@ -90,6 +96,10 @@ while (true)
 
     rgbSensor.GetRawData(out ushort r, out ushort g, out ushort b, out ushort c);
     Console.WriteLine("Channels: r: " + r + " g: " + g + " b: " + b);
+
+    // Lees de gaswaarden van de multichannel gas sensor.
+    var (NO2, Ethanol, VOC, CO) = gasSensor.MeasureAll();
+    Console.WriteLine($"Gaswaarden - NO2: {NO2}, Ethanol: {Ethanol}, VOC: {VOC}, CO: {CO}");
 
     // Wacht 1 seconde voordat de lus opnieuw wordt uitgevoerd.
     Robot.Wait(1000);
