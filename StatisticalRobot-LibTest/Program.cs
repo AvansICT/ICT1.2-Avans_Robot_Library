@@ -39,6 +39,11 @@ LightSensor lightSensor = new LightSensor(0, 250); // A0
 LCD16x2 lcd = new LCD16x2(0x3E);
 lcd.SetText("Hallo, Robot!");
 
+// Voorbeeld: Compass (AK09918)
+// Deze klasse kun je initialiseren met een modes van hoevaak de sensors updaten
+AK09918 compass = new AK09918();
+compass.initialize(AK09918_mode_type.AK09918_NORMAL);
+
 // Eenmalige actie: zet de LED aan, wacht een halve seconde en zet hem weer uit.
 led.SetOn();
 Robot.Wait(500); // Wacht 500 milliseconden
@@ -90,6 +95,11 @@ while (true)
 
     rgbSensor.GetRawData(out ushort r, out ushort g, out ushort b, out ushort c);
     Console.WriteLine("Channels: r: " + r + " g: " + g + " b: " + b);
+
+    // Lees de waarde van de compass
+    short compass_x = 0, compass_y = 0, compass_z = 0;
+    compass.GetData(ref compass_x, ref compass_y, ref compass_z);
+    Console.WriteLine($"Compass: x:{compass_x} y:{compass_x} z:{compass_z}");
 
     // Wacht 1 seconde voordat de lus opnieuw wordt uitgevoerd.
     Robot.Wait(1000);
