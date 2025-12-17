@@ -1,4 +1,3 @@
-
 using Avans.StatisticalRobot;
 using System.Device.Gpio;
 
@@ -7,21 +6,54 @@ public class DHT11
     private readonly int _pin;
 
     /// <summary>
-    /// This is a digital device
-    /// 3.3V/5V
+    /// Initializes the DHT11 sensor.
     /// </summary>
-    /// <param name="pin">Pin number on grove board</param>
-    public DHT11(int pin) 
+    /// <param name="pin">GPIO pin where the sensor is connected.</param>
+    public DHT11(int pin)
     {
         Robot.SetDigitalPinMode(pin, PinMode.Output);
         _pin = pin;
     }
 
-    public int[] GetTemperatureAndHumidity() 
+    /// <summary>
+    /// Reads humidity and temperature from the DHT11 sensor.
+    /// </summary>
+    /// <returns>
+    /// A tuple containing humidity (in percentage) and temperature (in Celsius).
+    /// If the data is invalid, returns (0, 0).
+    /// </returns>
+    public DHT11Data GetSensorReadings(int maxRetries = 5)
     {
-        return ReadDht11Data();
+        int retries = 0;
+
+        while (retries < maxRetries)
+        {
+            int[] data = ReadDht11Data();
+
+            // Validate the data using checksum
+            if (data.Length == 5 && data[4] == ((data[0] + data[1] + data[2] + data[3]) & 0xFF))
+            {
+                DHT12Data dHTData = new DHT11Data();
+                dHTData.Humidity = data[0];
+                dHTData.Temperature = data[2];
+                return dHTData;
+            }
+
+            // Log the failure and retry
+            Console.WriteLine($"Attempt {retries + 1} failed: Invalid data received from the DHT11 sensor.");
+            retries++;
+            Thread.Sleep(500);
+        }
+
+        Console.WriteLine("All attempts to read from the DHT11 sensor failed.");
+        DHT11Data dHTDataEmpty = new DHT11Data();
+        return dHTDataEmpty; // Return default values if all retries fail
     }
 
+    /// <summary>
+    /// Reads raw data from the DHT11 sensor.
+    /// </summary>
+    /// <returns>An array of 5 integers containing raw sensor data.</returns>
     private int[] ReadDht11Data()
     {
         int[] dht11_dat = new int[5];
@@ -33,9 +65,9 @@ public class DHT11
 
         Robot.SetDigitalPinMode(_pin, PinMode.Output);
         Robot.WriteDigitalPin(_pin, PinValue.Low);
-        Robot.Wait(18);
+        Robot.Wait(18); // Wait 18ms to signal the start
         Robot.WriteDigitalPin(_pin, PinValue.High);
-        Robot.WaitUs(40);
+        Robot.WaitUs(40); // Wait 40us
         Robot.SetDigitalPinMode(_pin, PinMode.Input);
 
         for (i = 0; i < 85; i++)
@@ -44,7 +76,7 @@ public class DHT11
             while (Robot.ReadDigitalPin(_pin) == lastState)
             {
                 counter++;
-                Thread.Sleep(TimeSpan.FromTicks(1));
+                Robot.WaitUs(2); // More precise timing
                 if (counter == 255)
                 {
                     break;
@@ -64,17 +96,13 @@ public class DHT11
             }
         }
 
-        if ((j >= 40) &&
-            (dht11_dat[4] == ((dht11_dat[0] + dht11_dat[1] + dht11_dat[2] + dht11_dat[3]) & 0xFF)))
-        {
-            //fahrenheit = dht11_dat[2] * 9f / 5f + 32;
-            return dht11_dat;
-        }
-        else
-        {
-            Array.Clear(dht11_dat, 0, dht11_dat.Length);
-            return dht11_dat;
-        }
+        // Check if data read is complete and return
+        return dht11_dat;
     }
-
+    // make a temperature and humidity klass
+    public class DHT11Data
+    {
+        public int Temperature { get; set; }
+        public int Humidity { get; set; }
+    }
 }
