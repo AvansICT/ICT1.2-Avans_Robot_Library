@@ -33,7 +33,10 @@ namespace Avans.StatisticalRobot
             }
             return -1;
         }
-
+        /// <summary>
+        /// reads out the current brightness seen by the lightsensor
+        /// </summary>
+        /// <returns>an integer of brightness in Lux</returns>
         public int GetLux()
         {
             return Update();
