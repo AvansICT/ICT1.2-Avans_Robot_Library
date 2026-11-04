@@ -1,0 +1,43 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"type": "statisticalrobot",
+			"projectName": "${workspaceFolderBasename}",
+			"projectFile": "StatisticalRobot-LibTest/RobotProject.csproj",
+			"robotIpAddress": "${command:avans-statisticalrobot.connectedRobotIpAddress}",
+			"robotOutputDir": "/media/csprojects",
+			"problemMatcher": [],
+			"label": "statisticalrobot: Build and Deploy",
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			}
+		},
+		{
+			"label": "StatisticalRobot-Lib: Publish as DLL",
+			"command": "dotnet",
+			"type": "process",
+			"args": [
+				"publish", "./StatisticalRobot-Lib/StatisticalRobot-Lib.csproj",
+				"--runtime", "linux-arm64",
+				"--nologo",
+				"--no-self-contained"
+			],
+			"problemMatcher": "$msCompile"
+		},
+		{
+			"label": "Update StatisticalRobot-ProjectTemplate Library",
+			"dependsOn": [
+				"StatisticalRobot-Lib: Publish as DLL"
+			],
+			"command": "cp",
+			"type": "shell",
+			"args": [
+				"StatisticalRobot-Lib/bin/Release/net8.0/linux-arm64/publish/StatisticalRobot-Lib.dll",
+				"../StatisticalRobot-ProjectTemplate/StatisticalRobot-Lib.dll"
+			],
+			"problemMatcher": []
+		}
+	]
+}
