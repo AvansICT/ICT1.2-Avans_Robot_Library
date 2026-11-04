@@ -2,6 +2,7 @@ using System.Device.Gpio;
 
 namespace Avans.StatisticalRobot;
 
+/// <summary>Controls a Grove digital buzzer with an application-driven beep interval.</summary>
 public class Buzzer
 {
     private readonly int _pin;
@@ -11,7 +12,7 @@ public class Buzzer
     /// This is a digital device
     /// Beeps (On/Off)
     /// 3.3V/5V
-    /// Resonant Frequency: 2300±300Hz
+    /// Resonant Frequency: 2300Â±300Hz
     /// </summary>
     /// <param name="pin">Pin number on grove board</param>
     /// <param name="intervalms">Time in milliseconds between beeps</param>

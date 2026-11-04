@@ -2,6 +2,7 @@ using System.Device.Gpio;
 
 namespace Avans.StatisticalRobot;
 
+/// <summary>Switches a Grove digital LED on or off.</summary>
 public class Led
 {
     private readonly int _pin;

@@ -99,7 +99,8 @@ The build restores the pinned DocFX tool and library dependencies, compiles the
 library, generates API metadata and HTML, and checks that key pages and the search
 index exist. DocFX warnings fail the build, including unresolved documentation
 links. Existing C# compiler warnings remain visible and are not all promoted to
-errors. In particular, `CS1591` identifies public APIs that still need comments.
+errors. `CS1591` identifies public APIs missing XML comments; keep comments on new
+public types and members to avoid introducing this warning again.
 
 Only a successful `master` build uploads the site artifact. A separate job has
 `pages: write` and `id-token: write`, configures Pages, and deploys that artifact.
@@ -128,8 +129,8 @@ behavior. Escape XML characters: write `&lt;` for `<` and `&amp;` for `&`.
 
 Start with the most used APIs: `Robot`, device constructors, sensor return values,
 and periodic update methods. Public members without comments still appear with
-their signatures. Complete descriptions gradually; the initial setup does not
-claim full comment coverage. See [DocFX .NET API documentation](https://dotnet.github.io/docfx/docs/dotnet-api-docs.html).
+their signatures. Keep descriptions accurate when behavior changes and document
+new public members. See [DocFX .NET API documentation](https://dotnet.github.io/docfx/docs/dotnet-api-docs.html).
 
 ## 7. Maintain the general use guide
 
