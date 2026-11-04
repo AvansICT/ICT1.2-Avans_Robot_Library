@@ -2,6 +2,7 @@
 
 namespace Avans.StatisticalRobot
 {
+    /// <summary>Reads raw analog light sensor values at a configured interval.</summary>
     public class LightSensor
     {
         private readonly byte _pin;

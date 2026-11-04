@@ -1,5 +1,7 @@
 ﻿namespace Avans.StatisticalRobot
 {
+    /// <summary>Tracks a repeating interval that is checked by the application.</summary>
+    /// <param name="msPeriod">The interval between ticks, in milliseconds.</param>
     public class PeriodTimer(int msPeriod)
     {
         private DateTime _lastTickTime = DateTime.Now;

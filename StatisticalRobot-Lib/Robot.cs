@@ -16,7 +16,7 @@ public static class Robot {
     private static I2cBus i2cBus = I2cBus.Create(1);
     private static I2cDevice romi32u4 = i2cBus.CreateDevice(0x14);
     //This is the address 0x04 for the grovePi
-    private static I2cDevice grovePiAnalog = i2cBus.CreateDevice(0x04);
+    private static I2cDevice? grovePiAnalog = i2cBus.CreateDevice(0x04);
 
     private static GpioController gpioController = new();
     private static PwmChannel? pwm;
@@ -24,13 +24,15 @@ public static class Robot {
   static Robot()
     {
         byte grovePiAddress = 0x04;
+        I2cDevice analogDevice = grovePiAnalog
+            ?? throw new InvalidOperationException("The Grove analog device was not created.");
 
         try
         {
-            grovePiAnalog.WriteByte(0x01);
+            analogDevice.WriteByte(0x01);
 
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             i2cBus.RemoveDevice(grovePiAddress);
             grovePiAnalog = null;
@@ -42,13 +44,14 @@ public static class Robot {
 
         if (grovePiAnalog == null)
         {
-            grovePiAnalog = i2cBus.CreateDevice(grovePiAddress);
+            analogDevice = i2cBus.CreateDevice(grovePiAddress);
+            grovePiAnalog = analogDevice;
             try
             {
-                grovePiAnalog.WriteByte(0x01);
+                analogDevice.WriteByte(0x01);
 
             }
-            catch (Exception ex)
+            catch (Exception)
             {
 
                 grovePiAnalog = null;
@@ -107,6 +110,8 @@ public static class Robot {
         romi32u4.Write(writeBuffer);
     }
 
+    /// <summary>Queries information about the Raspberry Pi I2C bus and its devices.</summary>
+    /// <returns>The component information reported by the I2C bus.</returns>
     public static ComponentInformation GetQueryComponentInformation()
     {
 
@@ -204,32 +209,44 @@ public static class Robot {
             .ToArray();
     }
 
+    /// <summary>Creates a device on the shared I2C bus.</summary>
+    /// <param name="address">The device's I2C address.</param>
+    /// <returns>The I2C device for the specified address.</returns>
     public static I2cDevice CreateI2cDevice(byte address) 
     {
         return i2cBus.CreateDevice(address);
     } 
 
+    /// <summary>Opens a digital pin in the specified mode.</summary>
+    /// <param name="pinNumber">The GPIO pin number used by the Grove port.</param>
+    /// <param name="state">The input or output mode for the pin.</param>
     public static void SetDigitalPinMode(int pinNumber,PinMode state)
     {
         gpioController.OpenPin(pinNumber,state);
     }
 
+    /// <summary>Writes a value to an open digital output pin.</summary>
+    /// <param name="pinNumber">The GPIO pin number used by the Grove port.</param>
+    /// <param name="value">The high or low value to write.</param>
     public static void WriteDigitalPin(int pinNumber, PinValue value)
     {
         gpioController.Write(pinNumber,value);
     }
 
+    /// <summary>Reads an open digital input pin.</summary>
+    /// <param name="pinNumber">The GPIO pin number used by the Grove port.</param>
+    /// <returns>The pin's high or low value.</returns>
     public static PinValue ReadDigitalPin(int pinNumber)
     {
         return gpioController.Read(pinNumber);
     }
 
     /// <summary>
-    /// Setup for the pwm
+    /// Creates the PWM channel on chip 0, channel 0.
     /// </summary>
-    /// <param name="frequency"></param>
-    /// <param name="dutyCyclePercentage"></param>
-    /// <exception cref="ArgumentOutOfRangeException"></exception>
+    /// <param name="frequency">The PWM frequency in hertz.</param>
+    /// <param name="dutyCyclePercentage">The duty cycle as a fraction between 0.0 and 1.0.</param>
+    /// <exception cref="ArgumentOutOfRangeException">The duty cycle is outside the allowed range.</exception>
     public static void SetPwmPin(int frequency, double dutyCyclePercentage )
     {
         if(dutyCyclePercentage < 0 || dutyCyclePercentage > 1) 
@@ -239,26 +256,46 @@ public static class Robot {
         pwm = PwmChannel.Create(0,0,frequency,dutyCyclePercentage);
     }
 
+    private static PwmChannel GetPwmChannel() =>
+        pwm ?? throw new InvalidOperationException("Call SetPwmPin before using PWM.");
+
+    /// <summary>Changes the configured PWM channel's frequency.</summary>
+    /// <param name="frequency">The PWM frequency in hertz.</param>
+    /// <exception cref="InvalidOperationException">The PWM channel has not been configured with <see cref="SetPwmPin"/>.</exception>
     public static void ChangePwmFrequency(int frequency)
     {
-        pwm.Frequency = frequency;
+        GetPwmChannel().Frequency = frequency;
     }
 
+    /// <summary>Changes the configured PWM channel's duty cycle.</summary>
+    /// <param name="dutyCycle">The duty cycle as a fraction between 0.0 and 1.0.</param>
+    /// <exception cref="InvalidOperationException">The PWM channel has not been configured with <see cref="SetPwmPin"/>.</exception>
     public static void ChangePwmDutyCycle(double dutyCycle)
     {
-        pwm.DutyCycle = dutyCycle;
+        GetPwmChannel().DutyCycle = dutyCycle;
     }
 
-    public static void StartPwm() => pwm.Start();
-    public static void StopPwm() => pwm.Stop();
+    /// <summary>Starts output from the configured PWM channel.</summary>
+    /// <exception cref="InvalidOperationException">The PWM channel has not been configured with <see cref="SetPwmPin"/>.</exception>
+    public static void StartPwm() => GetPwmChannel().Start();
 
+    /// <summary>Stops output from the configured PWM channel.</summary>
+    /// <exception cref="InvalidOperationException">The PWM channel has not been configured with <see cref="SetPwmPin"/>.</exception>
+    public static void StopPwm() => GetPwmChannel().Stop();
+
+    /// <summary>Reads an analog channel on the Grove board.</summary>
+    /// <param name="analogPin">The analog channel index, such as 0 for A0.</param>
+    /// <returns>The raw analog reading, or 0 if the board is unavailable or the read fails.</returns>
+    /// <remarks>Read failures are also written to the console.</remarks>
     public static int AnalogRead(byte analogPin)
     {
         try
         {
-            grovePiAnalog.WriteRegister((byte)(0x30 + analogPin));
+            I2cDevice analogDevice = grovePiAnalog
+                ?? throw new InvalidOperationException("The Grove analog board is unavailable.");
+            analogDevice.WriteRegister((byte)(0x30 + analogPin));
             byte[] readBuffer = new byte[2];
-            grovePiAnalog.ReadRegister((byte)(0x30+analogPin),readBuffer);
+            analogDevice.ReadRegister((byte)(0x30+analogPin),readBuffer);
             int value = readBuffer[1] << 8 | readBuffer[0];
             return value;
         }
@@ -311,6 +348,9 @@ public static class Robot {
         return (int)Math.Round(pulseTimer.Elapsed.TotalMicroseconds);
     }
 
+    /// <summary>Busy-waits for approximately the specified number of microseconds.</summary>
+    /// <param name="usec">The delay in microseconds.</param>
+    /// <remarks>Timing depends on the operating system and processor scheduling.</remarks>
     [MethodImpl(MethodImplOptions.AggressiveOptimization)]
     public static void WaitUs(int usec)
     {
@@ -324,6 +364,8 @@ public static class Robot {
         } while (nowTicks - startTicks < durationTicks);
     }
 
+    /// <summary>Suspends the current thread for the specified delay.</summary>
+    /// <param name="ms">The delay in milliseconds, or -1 to wait indefinitely.</param>
     public static void Wait(int ms)
     {
         Thread.Sleep(ms);

@@ -2,6 +2,7 @@
 
 namespace Avans.StatisticalRobot
 {
+    /// <summary>Reads a Grove motion sensor with configurable polling and alert delays.</summary>
     public class PIRMotion
     {
         private readonly int _pin;

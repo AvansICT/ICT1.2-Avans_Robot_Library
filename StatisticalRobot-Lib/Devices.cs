@@ -1,8 +1,10 @@
 namespace Avans.StatisticalRobot;
 
+/// <summary>Groups factory methods for Grove analog, digital, and I2C devices.</summary>
 public class Devices
 {
 
+    /// <summary>Provides factory methods for devices connected to analog Grove ports.</summary>
     public class Analog
     {
         /// <summary>
@@ -19,6 +21,7 @@ public class Devices
         }
     }
 
+    /// <summary>Provides factory methods for devices connected to digital Grove ports.</summary>
     public class Digital
     {
         /// <summary>
@@ -73,7 +76,7 @@ public class Devices
         /// <summary>
         /// 3.3V/5V
         /// Max Distance:2-5m (2m by default)
-        /// Angle: X=110° Y=90°
+        /// Angle: X=110Â° Y=90Â°
         /// </summary>
         /// <param name="pin">Pin number on grove board</param>
         /// <param name="intervalms">Time between measures in milliseconds</param>
@@ -98,7 +101,7 @@ public class Devices
         /// This is a digital device
         /// Beeps (On/Off)
         /// 3.3V/5V
-        /// Resonant Frequency: 2300±300Hz
+        /// Resonant Frequency: 2300Â±300Hz
         /// </summary>
         /// <param name="pin">Pin number on grove board</param>
         /// <param name="intervalms">Time in milliseconds between beeps</param>
@@ -108,6 +111,7 @@ public class Devices
         }
     }
 
+    /// <summary>Provides factory methods for devices connected to the I2C bus.</summary>
     public class I2c
     {
         /// <summary>

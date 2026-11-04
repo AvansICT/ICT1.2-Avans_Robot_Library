@@ -2,6 +2,7 @@
 
 namespace Avans.StatisticalRobot
 {
+    /// <summary>Reads a Grove infrared reflective sensor at intervals of at least 50 ms.</summary>
     public class InfraredReflective
     {
         private readonly int _pin;

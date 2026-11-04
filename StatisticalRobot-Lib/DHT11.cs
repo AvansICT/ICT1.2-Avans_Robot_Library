@@ -2,6 +2,7 @@
 using Avans.StatisticalRobot;
 using System.Device.Gpio;
 
+/// <summary>Reads temperature and relative humidity from a DHT11 digital sensor.</summary>
 public class DHT11
 {
     private readonly int _pin;
@@ -17,6 +18,12 @@ public class DHT11
         _pin = pin;
     }
 
+    /// <summary>Reads and validates one temperature and humidity sample.</summary>
+    /// <returns>
+    /// Five values in order: humidity integer part, humidity decimal part,
+    /// temperature integer part, temperature decimal part, and checksum.
+    /// All values are zero if the read or checksum validation fails.
+    /// </returns>
     public int[] GetTemperatureAndHumidity() 
     {
         return ReadDht11Data();
