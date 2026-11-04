@@ -1,0 +1,8 @@
+- name: Getting started
+  href: index.md
+- name: Devices and update loops
+  href: devices.md
+- name: Deployment and troubleshooting
+  href: deployment.md
+- name: Documentation setup
+  href: documentation-setup.md

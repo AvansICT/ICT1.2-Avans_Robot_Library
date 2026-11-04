@@ -2,6 +2,7 @@
 
 namespace Avans.StatisticalRobot
 {
+    /// <summary>Measures distance using a Grove ultrasonic sensor on a digital port.</summary>
     public class Ultrasonic
     {
         private readonly int _pin;
@@ -20,6 +21,8 @@ namespace Avans.StatisticalRobot
         }
 
 
+        /// <summary>Sends a trigger pulse and measures the reflected pulse duration.</summary>
+        /// <returns>The distance in whole centimeters; pulse failures produce 0 after integer conversion.</returns>
         public int GetUltrasoneDistance()
         {
             Robot.SetDigitalPinMode(_pin, PinMode.Output);

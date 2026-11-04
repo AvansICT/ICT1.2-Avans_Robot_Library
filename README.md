@@ -4,6 +4,14 @@ Library for controlling the Pololu Romi (with Raspberry Pi) plus Grove accessori
 
 > This repository contains the source code and a sample project. In normal projects you consume the library as a NuGet package.
 
+## Documentation
+
+The [documentation site](https://avansict.github.io/ICT1.2-Avans_Robot_Library/)
+contains a general use guide and an API reference generated from C# XML comments.
+It is published after successful pushes to `master`, once GitHub Pages is enabled.
+See the [step-by-step documentation setup](docs/guide/documentation-setup.md)
+for the required GitHub settings, local preview commands, and comment guidelines.
+
 ## 1. Developing
 
 The library is developed using VSCode, but Visual Studio should also work. The C# solution exists of two folders:

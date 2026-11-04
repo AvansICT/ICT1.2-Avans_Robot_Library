@@ -3,6 +3,7 @@ using System.Diagnostics; // For Stopwatch
 
 namespace Avans.StatisticalRobot;
 
+/// <summary>Reads temperature and relative humidity from a DHT11 digital sensor.</summary>
 public class DHT11
 {
     private static long StopwatchTicksPerMicrosecond = (long)(Stopwatch.Frequency * 0.000_001);
