@@ -7,6 +7,10 @@ using System.Runtime.CompilerServices;
 
 namespace Avans.StatisticalRobot;
 
+/// <summary>
+/// Provides shared access to the Romi motors, sensors, GPIO, and timing functions.
+/// </summary>
+/// <remarks>Requires the Raspberry Pi hardware and access to I2C and GPIO.</remarks>
 public static class Robot {
 
     private static I2cBus i2cBus = I2cBus.Create(1);
@@ -137,7 +141,7 @@ public static class Robot {
     /// <summary>
     /// Plays notes on the buzzer located on the romi
     /// </summary>
-    /// <param name="notes">Parses the input string to determine note duration, octave, and whether the note is dotted. It handles octave (o), length (l), and octave shift (> and <) commands.</param>
+    /// <param name="notes">Parses the input string to determine note duration, octave, and whether the note is dotted. It handles octave (o), length (l), and octave shift (&gt; and &lt;) commands.</param>
     public static void PlayNotes(string notes)
     {
         byte[] data = new byte[16];
@@ -148,7 +152,7 @@ public static class Robot {
     }
 
     /// <summary>
-    /// Sets speed per motor <= 400
+    /// Sets speed per motor &lt;= 400
     /// </summary>
     /// <param name="speedLeft">Speed left motor</param>
     /// <param name="speedRight">Speed right motor</param>

@@ -15,6 +15,7 @@ namespace Avans.StatisticalRobot
         /// Peak wavelength: 540 nm
         /// </summary>
         /// <param name="pin">Pin number on grove board (A0=0, A2=2)</param>
+        /// <param name="intervalms">Minimum time between readings, in milliseconds.</param>
         public LightSensor(byte pin, int intervalms)
         {
             _pin = pin;
@@ -34,9 +35,9 @@ namespace Avans.StatisticalRobot
             return -1;
         }
         /// <summary>
-        /// reads out the current brightness seen by the lightsensor
+        /// Reads the analog value from the light sensor when the read interval has passed.
         /// </summary>
-        /// <returns>an integer of brightness in Lux</returns>
+        /// <returns>The analog reading, or -1 when no new sample is available.</returns>
         public int GetLux()
         {
             return Update();

@@ -3,6 +3,8 @@ using Avans.StatisticalRobot.Interfaces;
 
 namespace Avans.StatisticalRobot;
 
+/// <summary>Controls a digital LED that changes state at a configured interval.</summary>
+/// <remarks>Call <see cref="Update"/> regularly from the application's main loop.</remarks>
 public class BlinkLed : IUpdatable
 {
     private readonly int _pin;
@@ -25,8 +27,7 @@ public class BlinkLed : IUpdatable
     private PinValue ledState = PinValue.Low;
 
     /// <summary>
-    /// changes the leds staate from on to off
-    /// when the time specified in the constructor has passed
+    /// Toggles the LED if the interval specified in the constructor has passed.
     /// </summary>
     public void Update()
     {

@@ -1,0 +1,7 @@
+- name: Home
+  href: index.md
+- name: General use guide
+  href: guide/toc.yml
+  homepage: guide/index.md
+- name: API reference
+  href: api/toc.yml
