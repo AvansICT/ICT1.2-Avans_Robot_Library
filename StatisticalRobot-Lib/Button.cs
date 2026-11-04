@@ -3,7 +3,7 @@ using System.Diagnostics;
 
 namespace Avans.StatisticalRobot;
 
-/// <summary>Reads a Grove digital button and detects button release events.</summary>
+/// <summary>Leest een grove button uit</summary>
 public class Button
 {
     private readonly int _pin;
