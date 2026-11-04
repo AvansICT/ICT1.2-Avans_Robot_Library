@@ -18,11 +18,15 @@
     "content": [
       { "files": ["index.md", "toc.yml", "guide/**.md", "guide/toc.yml", "api/**.yml"] }
     ],
+    "resource": [
+      { "files": ["images/**.svg"] }
+    ],
     "output": "_site",
     "template": ["default", "modern"],
     "globalMetadata": {
       "_appTitle": "Avans Robot Library",
       "_appName": "Avans Robot Library",
+      "_appLogoPath": "images/avans.svg",
       "_appFooter": "Avans StatisticalRobot library documentation",
       "_enableSearch": true,
       "_lang": "en"
