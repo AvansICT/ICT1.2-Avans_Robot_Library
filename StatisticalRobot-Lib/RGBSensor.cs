@@ -34,10 +34,14 @@ namespace Avans.StatisticalRobot
 
         public enum Gain : byte
         {
-            GAIN_1X = 0x00,   /**<  No gain  */
-            GAIN_4X = 0x01,   /**<  4x gain  */
-            GAIN_16X = 0x02,   /**<  16x gain */
-            GAIN_60X = 0x03    /**<  60x gain */
+            /// <summary>No gain (1x).</summary>
+            GAIN_1X = 0x00,
+            /// <summary>4x gain.</summary>
+            GAIN_4X = 0x01,
+            /// <summary>16x gain.</summary>
+            GAIN_16X = 0x02,
+            /// <summary>60x gain.</summary>
+            GAIN_60X = 0x03
         }
 
         private I2cDevice _device;
