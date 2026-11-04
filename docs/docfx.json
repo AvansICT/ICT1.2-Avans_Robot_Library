@@ -26,7 +26,7 @@
     "globalMetadata": {
       "_appTitle": "Avans Robot Library",
       "_appName": "Avans Robot Library",
-      "_appLogoPath": "images/avans.png",
+      "_appLogoPath": "images/avans.svg",
       "_appFooter": "Avans StatisticalRobot library documentation",
       "_enableSearch": true,
       "_lang": "en"
