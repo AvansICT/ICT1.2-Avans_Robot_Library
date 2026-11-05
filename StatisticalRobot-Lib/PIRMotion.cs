@@ -9,15 +9,10 @@ namespace Avans.StatisticalRobot
         private readonly int _intervalms;
         private readonly int _alerttime;
 
-        /// <summary>
-        /// This is a digital device
-        /// 3.3V/5V
-        /// Max Distance:2-5m (2m by default)
-        /// Angle: X=110° Y=90°
-        /// </summary>
-        /// <param name="pin">Pin number on grove board</param>
-        /// <param name="intervalms">Time between measures in milliseconds</param>
-        /// <param name="alerttime">Time to use for alerting after detection in milliseconds</param>
+        /// <summary>Initializes a digital motion sensor with a polling interval and an additional delay after motion detection.</summary>
+        /// <param name="pin">The pin number on the Grove board.</param>
+        /// <param name="intervalms">The minimum interval between sensor readings, in milliseconds.</param>
+        /// <param name="alerttime">The additional delay before the next reading after motion is detected, in milliseconds.</param>
         public PIRMotion(int pin, int intervalms, int alerttime)
         {
             Robot.SetDigitalPinMode(pin, PinMode.Input);
@@ -47,10 +42,8 @@ namespace Avans.StatisticalRobot
             }
             return -1;
         }
-        /// <summary>
-        /// checks to see if there is motion at the time of the interval and then checks again for the entire alert time
-        /// </summary>
-        /// <returns>an integer with PinValue.High (1) when motion is detect and PinValue.Low (0) when not detected</returns>
+        /// <summary>Samples motion when the polling interval has elapsed. A HIGH sample postpones the next reading by the alert delay plus the polling interval.</summary>
+        /// <returns>1 when motion is detected, 0 when no motion is detected, or -1 when no new sample is available.</returns>
         public int Watch()
         {
             return Update();

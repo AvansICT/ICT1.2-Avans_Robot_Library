@@ -2,7 +2,7 @@
 using System.Device.I2c;
 
 /// <summary>
-/// Makes it possible to specify what data needs to be read or written to what register
+/// Provides extension methods for reading and writing I2C device registers.
 /// </summary>
 public static class I2cDeviceExtensions
 {

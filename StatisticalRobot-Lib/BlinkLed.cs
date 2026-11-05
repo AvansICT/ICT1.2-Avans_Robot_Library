@@ -10,12 +10,9 @@ public class BlinkLed : IUpdatable
     private readonly int _pin;
     private readonly int _msBlink;
 
-    /// <summary>
-    /// This is a digital device
-    /// 3.3V/5V
-    /// </summary>
-    /// <param name="pin">Pin number on grove board</param>
-    /// <param name="msBlink">Time in milliseconds</param>
+    /// <summary>Initializes an LED output with the specified interval between state changes.</summary>
+    /// <param name="pin">The pin number on the Grove board.</param>
+    /// <param name="msBlink">The interval between LED state changes, in milliseconds.</param>
     public BlinkLed(int pin, int msBlink)
     {
         Robot.SetDigitalPinMode(pin, PinMode.Output);

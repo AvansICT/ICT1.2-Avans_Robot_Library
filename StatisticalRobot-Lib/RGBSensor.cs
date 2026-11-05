@@ -68,12 +68,10 @@ namespace Avans.StatisticalRobot
             _gain = (byte)Gain.GAIN_1X;
             _initialized = false;
         }
-        /// <summary>
-        /// This is a I2C device for reading RGB colors.
-        /// </summary>
-        /// <param name="address">I2C address of device</param>
-        /// <param name="integrationTime">Time the device takes after reading</param>
-        /// <param name="gain">Sets the sensitivity (not tested)</param>
+        /// <summary>Creates a color sensor with the specified I2C address, integration time, and gain.</summary>
+        /// <param name="address">The sensor I2C address.</param>
+        /// <param name="integrationTime">The sensor integration time, also used for the delay after reading raw data.</param>
+        /// <param name="gain">The color channel amplification setting; hardware validation is still required.</param>
         public RGBSensor(byte address, IntegrationTime integrationTime, Gain gain)
         {
             _device = Robot.CreateI2cDevice(address);
@@ -185,14 +183,11 @@ namespace Avans.StatisticalRobot
         }
 
 
-        /// <summary>
-        /// GetRawData can be used to get data from the Sensor.
-        /// Be aware that this method uses the Integration time as set in the constructor after reading the data.
-        /// </summary>
-        /// <param name="r">returns the value of the RED channel</param>
-        /// <param name="g">returns the value of the GREEN channel</param>
-        /// <param name="b">returns the value of the BLUE channel</param>
-        /// <param name="c">returns the value of the CLEAR channel</param>
+        /// <summary>Reads the raw color channels, initializing the sensor if needed, then waits for the currently configured integration time.</summary>
+        /// <param name="r">Receives the raw red channel value.</param>
+        /// <param name="g">Receives the raw green channel value.</param>
+        /// <param name="b">Receives the raw blue channel value.</param>
+        /// <param name="c">Receives the raw clear channel value.</param>
 
         public void GetRawData(out ushort r, out ushort g, out ushort b, out ushort c)
         {

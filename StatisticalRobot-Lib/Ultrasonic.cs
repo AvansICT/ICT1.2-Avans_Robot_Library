@@ -7,13 +7,8 @@ namespace Avans.StatisticalRobot
     {
         private readonly int _pin;
 
-        /// <summary>
-        /// This is a digital device
-        /// 3.3V/5V
-        /// Detecting range: 0-4m
-        /// Resolution: 1cm
-        /// </summary>
-        /// <param name="pin">Pin number on grove board</param>
+        /// <summary>Initializes an ultrasonic sensor on the specified digital pin, initially configured as an output.</summary>
+        /// <param name="pin">The pin number on the Grove board.</param>
         public Ultrasonic(int pin)
         {
             Robot.SetDigitalPinMode(pin, PinMode.Output);

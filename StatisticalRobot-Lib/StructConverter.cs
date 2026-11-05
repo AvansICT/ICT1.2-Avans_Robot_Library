@@ -40,12 +40,12 @@ public class StructConverter
     }
 
     /// <summary>
-    /// Convert a byte array into an array of objects based on Python's "struct.unpack" protocol.
+    /// Decodes a byte array using the supported subset of struct format specifiers.
     /// </summary>
-    /// <param name="fmt">A "struct.pack"-compatible format string</param>
-    /// <param name="bytes">An array of bytes to convert to objects</param>
-    /// <returns>Array of objects.</returns>
-    /// <remarks>You are responsible for casting the objects in the array back to their proper types.</remarks>
+    /// <param name="fmt">The struct format string. Only a subset of Python struct syntax is supported.</param>
+    /// <param name="bytes">The bytes to decode; their length must match the format.</param>
+    /// <returns>The decoded values in format order.</returns>
+    /// <remarks>Cast the returned objects to their expected types. Byte order markers are parsed, but decoding currently uses the host byte order.</remarks>
     public static object[] Unpack(string fmt, byte[] bytes)
     {
         Debug.WriteLine("Format string is length {0}, {1} bytes provided.", fmt.Length, bytes.Length);
@@ -178,12 +178,12 @@ public class StructConverter
     }
 
     /// <summary>
-    /// Convert an array of objects to a byte array, along with a string that can be used with Unpack.
+    /// Encodes primitive values and generates the corresponding struct format string.
     /// </summary>
-    /// <param name="items">An object array of items to convert</param>
-    /// <param name="LittleEndian">Set to False if you want to use big endian output.</param>
-    /// <param name="NeededFormatStringToRecover">Variable to place an 'Unpack'-compatible format string into.</param>
-    /// <returns>A Byte array containing the objects provided in binary format.</returns>
+    /// <param name="items">The primitive values to encode, in order.</param>
+    /// <param name="LittleEndian">True requests little-endian output; false requests big-endian output.</param>
+    /// <param name="NeededFormatStringToRecover">Receives the generated struct format string; not all generated formats are currently supported by Unpack.</param>
+    /// <returns>The encoded bytes.</returns>
     public static byte[] Pack(object[] items, bool LittleEndian, out string NeededFormatStringToRecover)
     {
 

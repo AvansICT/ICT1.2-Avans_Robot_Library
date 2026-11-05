@@ -7,11 +7,8 @@ public class DHT11
 {
     private readonly int _pin;
 
-    /// <summary>
-    /// This is a digital device
-    /// 3.3V/5V
-    /// </summary>
-    /// <param name="pin">Pin number on grove board</param>
+    /// <summary>Initializes a DHT11 sensor on the specified digital pin.</summary>
+    /// <param name="pin">The pin number on the Grove board.</param>
     public DHT11(int pin) 
     {
         Robot.SetDigitalPinMode(pin, PinMode.Output);

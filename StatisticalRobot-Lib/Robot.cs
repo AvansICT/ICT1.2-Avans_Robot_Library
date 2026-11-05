@@ -78,13 +78,11 @@ public static class Robot {
 
     //}
 
-    /// <summary>
-    /// Reads data from Romi based on struct format
-    /// </summary>
-    /// <param name="address">Register adress</param>
-    /// <param name="size">Size of data</param>
-    /// <param name="format">struct format based on Python</param>
-    /// <returns>A formatted list of objects</returns>
+    /// <summary>Reads bytes from a Romi register and decodes them using the supplied struct format.</summary>
+    /// <param name="address">The Romi register address.</param>
+    /// <param name="size">The number of bytes to read.</param>
+    /// <param name="format">The format string interpreted by StructConverter.</param>
+    /// <returns>The decoded register values.</returns>
     private static object[] ReadUnpack(int address, int size, string format)
     {
         
@@ -97,11 +95,9 @@ public static class Robot {
         return StructConverter.Unpack(format, readBuffer);
     }
 
-    /// <summary>
-    /// Writes data to Romi with the correct format based on the type of data
-    /// </summary>
-    /// <param name="address">Register adress</param>
-    /// <param name="data">Data list</param>
+    /// <summary>Encodes values and writes them to the specified Romi register.</summary>
+    /// <param name="address">The Romi register address.</param>
+    /// <param name="data">The values to encode and write.</param>
     private static void WritePack(int address, params object[] data)
     {
         byte[] writeBuffer = StructConverter.Pack(data)
@@ -118,11 +114,9 @@ public static class Robot {
         return i2cBus.QueryComponentInformation();
     }
 
-    /// <summary>
-    /// Writes bytes to specific address
-    /// </summary>
-    /// <param name="address">Register address</param>
-    /// <param name="data">Byte list</param>
+    /// <summary>Writes raw bytes to the specified Romi register.</summary>
+    /// <param name="address">The Romi register address.</param>
+    /// <param name="data">The bytes to write after the register address.</param>
     private static void WriteRaw(int address, byte[] data) 
     {
         byte[] writeBuffer = data.Prepend((byte)address)
@@ -132,21 +126,17 @@ public static class Robot {
 
     }
 
-    /// <summary>
-    /// Writes the brightness for each individual led on the Romi
-    /// </summary>
-    /// <param name="red">Value between 0-255</param>
-    /// <param name="yellow">Value between 0-255</param>
-    /// <param name="green">Value between 0-255</param>
+    /// <summary>Writes the red, yellow, and green LED values to the Romi.</summary>
+    /// <param name="red">The red LED value, from 0 to 255.</param>
+    /// <param name="yellow">The yellow LED value, from 0 to 255.</param>
+    /// <param name="green">The green LED value, from 0 to 255.</param>
     public static void LEDs(byte red, byte yellow, byte green)
     {
         WriteRaw(0, [yellow, green, red]);
     }
 
-    /// <summary>
-    /// Plays notes on the buzzer located on the romi
-    /// </summary>
-    /// <param name="notes">Parses the input string to determine note duration, octave, and whether the note is dotted. It handles octave (o), length (l), and octave shift (&gt; and &lt;) commands.</param>
+    /// <summary>Sends up to 14 ASCII characters of a note sequence to the Romi buzzer.</summary>
+    /// <param name="notes">The note sequence interpreted by the Romi firmware. Only the first 14 ASCII characters are sent.</param>
     public static void PlayNotes(string notes)
     {
         byte[] data = new byte[16];
@@ -156,20 +146,16 @@ public static class Robot {
         WriteRaw(24, data);
     }
 
-    /// <summary>
-    /// Sets speed per motor &lt;= 400
-    /// </summary>
-    /// <param name="speedLeft">Speed left motor</param>
-    /// <param name="speedRight">Speed right motor</param>
+    /// <summary>Sends signed speed commands to the left and right motors without validating their range.</summary>
+    /// <param name="speedLeft">The signed speed command for the left motor.</param>
+    /// <param name="speedRight">The signed speed command for the right motor.</param>
     public static void Motors(short speedLeft, short speedRight)
     {
         WritePack(6,speedLeft,speedRight);
     }
 
-    /// <summary>
-    /// Reads buttons on the Romi
-    /// </summary>
-    /// <returns>List with bools if button is pressed or not</returns>
+    /// <summary>Reads the three button states reported by the Romi.</summary>
+    /// <returns>The three decoded button flags, in register order.</returns>
     public static bool[] ReadButtons()
     {
         return ReadUnpack(3,3,"???")
@@ -177,10 +163,8 @@ public static class Robot {
             .ToArray();
     }
 
-    /// <summary>
-    /// Reads current millivolts of the batterys
-    /// </summary>
-    /// <returns>The value in millivolts</returns>
+    /// <summary>Reads the battery voltage reported by the Romi.</summary>
+    /// <returns>The battery voltage in millivolts.</returns>
     public static ushort ReadBatteryMillivolts()
     {
         return ReadUnpack(10,2,"H")
@@ -198,10 +182,8 @@ public static class Robot {
     //         .ToArray();
     // }
 
-    /// <summary>
-    /// Reads the encoders on the weels
-    /// </summary>
-    /// <returns>The position of the weels</returns>
+    /// <summary>Reads the two signed wheel encoder counts reported by the Romi.</summary>
+    /// <returns>The two signed encoder counts, in register order.</returns>
     public static short[] ReadEncoders()
     {
         return ReadUnpack(39,4,"hh")
@@ -307,13 +289,11 @@ public static class Robot {
         }
     }
 
-    /// <summary>
-    /// Reads input pulses
-    /// </summary>
-    /// <param name="pin">The pin to read from</param>
-    /// <param name="waitFor">Pin value to wait for</param>
-    /// <param name="timeoutms">Timeout in milliseconds</param>
-    /// <returns>-2 if pinstate invalid, -1 if timeout, 0 if timeout during pulse read</returns>
+    /// <summary>Waits for the requested pin state, then measures how long the pin remains HIGH within the overall timeout.</summary>
+    /// <param name="pin">The digital input pin to read.</param>
+    /// <param name="waitFor">The pin state to wait for before timing; the timed loop measures HIGH.</param>
+    /// <param name="timeoutms">The overall timeout for waiting and timing, in milliseconds.</param>
+    /// <returns>The rounded HIGH duration in microseconds; -2 if the pin already has the requested state, -1 if waiting times out, or 0 if timing the pulse times out.</returns>
     [MethodImpl(MethodImplOptions.AggressiveOptimization)]
     public static int PulseIn(int pin, PinValue waitFor, int timeoutms)
     {

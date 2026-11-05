@@ -3,7 +3,7 @@ using System.Diagnostics;
 
 namespace Avans.StatisticalRobot;
 
-/// <summary>Leest een grove button uit</summary>
+/// <summary>Reads the state of a Grove button connected to a digital pin.</summary>
 public class Button
 {
     private readonly int _pin;
@@ -14,11 +14,11 @@ public class Button
     private Stopwatch watch = new Stopwatch();
 
     /// <summary>
-    /// This is a digital device
-    /// 3.3V/5V
+    /// Initializes a button connected to the specified digital pin.
+    /// The pin is configured as an input.
     /// </summary>
-    /// <param name="pin">Pin number on grove board</param>
-    /// <param name="defHigh">button has default behaviour: HIGH</param>
+    /// <param name="pin">The digital pin number on the Grove board.</param>
+    /// <param name="defHigh">The default-high setting, stored but currently unused when reading the button.</param>
     public Button(int pin, bool defHigh = false)
     {
         Robot.SetDigitalPinMode(pin, PinMode.Input);
@@ -27,29 +27,29 @@ public class Button
     }
 
     /// <summary>
-    /// returns "Released" when button is up and "Pressed" when button is down
+    /// Returns the button state, interpreting HIGH as released and LOW as pressed.
     /// </summary>
-    /// <returns>string</returns>
+    /// <returns>"Released" when the pin is HIGH; otherwise, "Pressed".</returns>
     public string GetState()
     {
         return (Robot.ReadDigitalPin(_pin) == PinValue.High) ? "Released" : "Pressed";
     }
 
     /// <summary>
-    /// returns True when button is up and False when button is down
+    /// Reads whether the button is pressed, interpreting LOW as pressed.
     /// </summary>
-    /// <returns>boolean</returns>
+    /// <returns>True when the pin is LOW (pressed); otherwise, false.</returns>
     public bool GetStateBool()
     {
         return (Robot.ReadDigitalPin(_pin) == PinValue.Low);
     }
     /// <summary>
-    /// only returns true on a state change of down to up, must be called every cycle of your program
+    /// Detects a transition from pressed to released. Call this method on every polling cycle.
     /// 
-    /// there is a minimum delay between up calls to prevent double inputs (this can happen if the button is making a partial connection)
-    /// this can be changed with SetMinDelay()
+    /// Release events are suppressed while the minimum-delay timer is running to reduce duplicate inputs.
+    /// Configure the delay with SetMinDelay().
     /// </summary>
-    /// <returns>boolean</returns>
+    /// <returns>True when a release transition is detected and the delay timer is not running; otherwise, false.</returns>
     public bool GetButtonUp()
     {
         bool current = GetStateBool();
@@ -68,9 +68,9 @@ public class Button
     }
 
     /// <summary>
-    /// changes the minimum amount of milliseconds between button up signals
+    /// Sets the minimum delay between reported button-release events.
     /// </summary>
-    /// <param name="delay">the minimum number of milliseconds between a button up</param>
+    /// <param name="delay">The minimum delay in milliseconds.</param>
     public void SetMinDelay(int delay)
     {
         _upDelay = delay;

@@ -7,11 +7,8 @@ namespace Avans.StatisticalRobot
     {
         private I2cDevice Device { get; }
 
-        /// <summary>
-        /// Dit is een I2C device
-        /// 3.3V/5V
-        /// </summary>
-        /// <param name="address">Address for example: 0x3E</param>
+        /// <summary>Creates an I2C connection to the LCD at the specified address.</summary>
+        /// <param name="address">The LCD I2C address, for example 0x3E.</param>
         public LCD16x2(byte address)
         {
             this.Device = Robot.CreateI2cDevice(address);
@@ -24,10 +21,8 @@ namespace Avans.StatisticalRobot
 
         // Set display text \n for second line (or auto wrap)
 
-        /// <summary>
-        /// clears the display and then sets the text of the display
-        /// </summary>
-        /// <param name="text">the text you want to show on the display (use \n for linebreaks)</param>
+        /// <summary>Clears the LCD and writes text across at most two rows of 16 characters.</summary>
+        /// <param name="text">The text to display. Use \n for line breaks; lines also wrap after 16 characters. Text beyond the second row is ignored.</param>
         public void SetText(string text)
         {
             TextCommand(0x01); // clear display
@@ -54,10 +49,8 @@ namespace Avans.StatisticalRobot
         }
 
         //    // Update the display without erasing the display
-        /// <summary>
-        /// sets the text of the display by overwriting the previous text without clearing it first
-        /// </summary>
-        /// <param name="text">the text you want to show on the display (use \n for linebreaks)</param>
+        /// <summary>Returns the cursor home and overwrites text without clearing the LCD first. Input is padded to at least 32 characters.</summary>
+        /// <param name="text">The text to display. Use \n for line breaks; lines also wrap after 16 characters. Text beyond the second row is ignored.</param>
         public void SetTextNoRefresh(string text)
         {
             TextCommand(0x02); // return home

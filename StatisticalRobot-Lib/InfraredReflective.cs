@@ -7,12 +7,8 @@ namespace Avans.StatisticalRobot
     {
         private readonly int _pin;
 
-        /// <summary>
-        /// This is a digital device
-        /// 3.3V/5V
-        /// Distance: 0 - 4.5 cm (best height is 1.2 cm)
-        /// </summary>
-        /// <param name="pin">Pin number on grove board</param>
+        /// <summary>Initializes an infrared reflective sensor on the specified digital input pin.</summary>
+        /// <param name="pin">The pin number on the Grove board.</param>
         public InfraredReflective(int pin)
         {
             Robot.SetDigitalPinMode(pin, PinMode.Input);
@@ -33,12 +29,8 @@ namespace Avans.StatisticalRobot
             return -1;
         }
 
-        /// <summary>
-        /// must be called every tick.
-        /// will check if the infrared reflective sensor is getting a reflecion back
-        /// will return PinValue.High (1) if it is reflective and PinValue.Low (0) if it isn't
-        /// </summary>
-        /// <returns>an integer</returns>
+        /// <summary>Reads the raw digital sensor state when more than 50 milliseconds have elapsed since the last sample. Call regularly.</summary>
+        /// <returns>1 for a HIGH input, 0 for a LOW input, or -1 when no new sample is available. Reflection polarity depends on the sensor.</returns>
         public int Watch()
         {
             return Update();

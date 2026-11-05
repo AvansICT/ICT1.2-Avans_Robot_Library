@@ -7,26 +7,19 @@ public class Led
 {
     private readonly int _pin;
 
-    /// <summary>
-    /// This is a digital device
-    /// 3.3V/5V
-    /// </summary>
-    /// <param name="pin">Pin number on grove board</param>
+    /// <summary>Initializes an LED on the specified digital output pin.</summary>
+    /// <param name="pin">The pin number on the Grove board.</param>
     public Led(int pin)
     {
         Robot.SetDigitalPinMode(pin, PinMode.Output);
         _pin = pin;
     }
-    /// <summary>
-    /// turns on the Led
-    /// </summary>
+    /// <summary>Turns the LED on by setting its output pin HIGH.</summary>
     public void SetOn()
     {
         Robot.WriteDigitalPin(_pin, PinValue.High);
     }
-    /// <summary>
-    /// turns off the Led
-    /// </summary>
+    /// <summary>Turns the LED off by setting its output pin LOW.</summary>
     public void SetOff()
     {
         Robot.WriteDigitalPin(_pin, PinValue.Low);
