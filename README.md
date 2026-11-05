@@ -85,9 +85,7 @@ while (true)
     int lux = light.GetLux();
     if (lux >= 0) Console.WriteLine($"Lux: {lux}"); // -1 means no new sample yet
 
-    int[] tAndH = climate.GetTemperatureAndHumidity();
-    if (tAndH[0] != 0 || tAndH[2] != 0)
-        Console.WriteLine($"Temp: {tAndH[2]}°C Humidity: {tAndH[0]}%");
+    Console.WriteLine($"Temperatuur: {climate.Temperature}°C, Luchtvochtigheid: {climate.RelativeHumidity}%");
 
     bool[] romiButtons = Robot.ReadButtons();
     bool a = romiButtons.Length > 0 && romiButtons[0];
@@ -114,7 +112,7 @@ All classes live in namespace `Avans.StatisticalRobot`.
 | `Buzzer`                  | `Buzzer(int pin, int intervalms)`                   | `Beep()` (call periodically; toggles on/off based on interval)                                                                                                                                                                      |
 | `Button`                  | `Button(int pin)`                                   | `GetState()` returns `string` ("Released"/"Pressed")                                                                                                                                                                                |
 | `Ultrasonic`              | `Ultrasonic(int pin)`                               | `GetUltrasoneDistance()` returns `int` (cm)                                                                                                                                                                                         |
-| `DHT11`                   | `DHT11(int pin)`                                    | `GetTemperatureAndHumidity()` returns `int[5]` (humidity int, humidity dec, temp int, temp dec, checksum)                                                                                                                           |
+| `DHT11`                   | `DHT11(int pin)`                                    | `Temperature` is the temperature in Celsius and `RelativeHumidity` is the relative humidity in %
 | `LightSensor`             | `LightSensor(byte analogPin, int intervalms)`       | `GetLux()` returns `int` value, or `-1` if the read interval hasn’t elapsed                                                                                                                                                         |
 | `PIRMotion`               | `PIRMotion(int pin, int intervalms, int alerttime)` | `Watch()` returns `1` (motion), `0` (no motion), or `-1` (no new sample yet)                                                                                                                                                        |
 | `InfraredReflective`      | `InfraredReflective(int pin)`                       | `Watch()` returns `1` (detect), `0` (no detect), or `-1` (no new sample yet)                                                                                                                                                        |

@@ -25,7 +25,7 @@ Ultrasonic ultrasonic = new Ultrasonic(6);
 // Voorbeeld: DHT11 temperatuur- en luchtvochtigheidssensor (sensor)
 // Leest de temperatuur en luchtvochtigheid.
 // Parameters: (pin)
-DHT11 dht11 = new DHT11(3);
+DHT11 dht11 = new DHT11(26);
 
 // Voorbeeld: Lichtsensor (analog sensor)
 // Leest een analoge waarde van de lichtsensor. De pin moet een analoge pin zijn (A0, A1, etc.).
@@ -71,11 +71,7 @@ while (true)
     Console.WriteLine($"Lichtwaarde: {lightSensor.GetLux()}");
 
     // Lees de temperatuur en luchtvochtigheid van de DHT11 sensor.
-    int[] dhtData = dht11.GetTemperatureAndHumidity();
-    if (dhtData[0] != 0 || dhtData[2] != 0) // Controleer of de data valide is
-    {
-        Console.WriteLine($"Temperatuur: {dhtData[2]}°C, Luchtvochtigheid: {dhtData[0]}%");
-    }
+    Console.WriteLine($"Temperatuur: {dht11.Temperature}°C, Luchtvochtigheid: {dht11.RelativeHumidity}%");
 
     // Lees de ingebouwde sensoren van de Romi robot.
     Console.WriteLine($"Batterijspanning: {Robot.ReadBatteryMillivolts()} mV");
