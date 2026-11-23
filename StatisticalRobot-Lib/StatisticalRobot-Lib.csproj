@@ -9,13 +9,15 @@
     <PlatformTarget>ARM64</PlatformTarget>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageId>Avans.StatisticalRobot</PackageId>
-    <Version>1.2.0</Version>
+    <Version>1.2.4</Version>
     <Authors>Marcel</Authors>
     <Company>Avans Hogeschool</Company>    
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="System.Device.Gpio" Version="3.2.0" />
+    <PackageReference Include="System.Device.Gpio" Version="4.2.0" />
+    <PackageReference Include="System.IO.Ports" Version="9.0.0" />
+    <PackageReference Include="Iot.Device.Bindings" Version="4.2.0" />
   </ItemGroup>
 
 </Project>
