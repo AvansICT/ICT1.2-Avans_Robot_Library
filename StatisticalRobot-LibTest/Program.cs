@@ -39,6 +39,13 @@ LightSensor lightSensor = new LightSensor(0, 250); // A0
 LCD16x2 lcd = new LCD16x2(0x3E);
 lcd.SetText("Hallo, Robot!");
 
+// Voorbeeld: Air Quality Sensor V1.3
+AirQualitySensor airQualitySensor = new AirQualitySensor(0);
+if (!airQualitySensor.Init())
+{
+    Console.WriteLine("Error: failed to initialize the air quality sensor");
+}
+
 // Eenmalige actie: zet de LED aan, wacht een halve seconde en zet hem weer uit.
 led.SetOn();
 Robot.Wait(500); // Wacht 500 milliseconden
@@ -72,6 +79,28 @@ while (true)
 
     // Lees de temperatuur en luchtvochtigheid van de DHT11 sensor.
     Console.WriteLine($"Temperatuur: {dht11.Temperature}°C, Luchtvochtigheid: {dht11.RelativeHumidity}%");
+
+    // Test de output van de air quality sensor
+    // Gebruik b.v. alcohol op een wattenstaafje om de sensor iets te laten meten
+    int currentAirQuality = airQualitySensor.Slope();
+    switch (currentAirQuality)
+    {
+        case AirQualitySensor.FORCE_SIGNAL:
+            Console.WriteLine("Air quality: FORCE SIGNAL");
+            break;
+        case AirQualitySensor.HIGH_POLLUTION:
+            Console.WriteLine("Air quality: HIGH POLLUTION");
+            break;
+        case AirQualitySensor.LOW_POLLUTION:
+            Console.WriteLine("Air quality: LOW POLLUTION");
+            break;
+        case AirQualitySensor.FRESH_AIR:
+            Console.WriteLine("Air quality: FRESH AIR");
+            break;
+        default:
+            Console.WriteLine("Error: unknown air quality value");
+            break;
+    }
 
     // Lees de ingebouwde sensoren van de Romi robot.
     Console.WriteLine($"Batterijspanning: {Robot.ReadBatteryMillivolts()} mV");
