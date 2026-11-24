@@ -14,9 +14,21 @@ namespace Avans.StatisticalRobot
     /// </summary>
     public class AirQualitySensor
     {
+        /// <summary>
+        /// Highest level of pollution that the sensor will detect
+        /// </summary>
         public const int FORCE_SIGNAL = 0;
+        /// <summary>
+        /// Considerable pollution detected by the sensor
+        /// </summary>
         public const int HIGH_POLLUTION = 1;
+        /// <summary>
+        /// Some pollution detected by the sensor
+        /// </summary>
         public const int LOW_POLLUTION = 2;
+        /// <summary>
+        /// No pollution detected by the sensor
+        /// </summary>
         public const int FRESH_AIR = 3;
 
         private byte _pin;
