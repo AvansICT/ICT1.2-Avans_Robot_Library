@@ -2,6 +2,7 @@
 
 namespace Avans.StatisticalRobot
 {
+    /// <summary>Reads a Grove motion sensor with configurable polling and alert delays.</summary>
     public class PIRMotion
     {
         private readonly int _pin;
@@ -46,11 +47,14 @@ namespace Avans.StatisticalRobot
             }
             return -1;
         }
-
+        /// <summary>
+        /// checks to see if there is motion at the time of the interval and then checks again for the entire alert time
+        /// </summary>
+        /// <returns>an integer with PinValue.High (1) when motion is detect and PinValue.Low (0) when not detected</returns>
         public int Watch()
         {
             return Update();
         }
-
+        //TODO: see wheren it has -1
     }
 }

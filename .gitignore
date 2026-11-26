@@ -1,2 +1,9 @@
 .vscode/settings.json
 .vs/**/*
+
+# Generated documentation and .NET build output
+docs/api/
+docs/_site/
+docs/obj/
+**/bin/
+**/obj/

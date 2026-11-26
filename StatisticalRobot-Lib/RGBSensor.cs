@@ -6,8 +6,10 @@ namespace Avans.StatisticalRobot
 {
 
 
+    /// <summary>Reads raw red, green, blue, and clear channels from a TCS34725 I2C sensor.</summary>
     public class RGBSensor
     {
+        /// <summary>The default I2C address of the color sensor (0x29).</summary>
         public const byte DEFAULT_I2C_ADDRESS = 0x29;
         private const byte TCS34725_COMMAND_BIT = 0x80;
         private const byte TCS34725_ENABLE = 0x00;
@@ -21,23 +23,35 @@ namespace Avans.StatisticalRobot
         private const byte TCS34725_GDATAL = 0x18;
         private const byte TCS34725_BDATAL = 0x1A;
 
+        /// <summary>Defines sensor integration times used to collect a color sample.</summary>
         public enum IntegrationTime : byte
         {
 
+            /// <summary>Integration time of approximately 2.4 milliseconds.</summary>
             INTEGRATION_TIME_2_4MS = 0xFF,
+            /// <summary>Integration time of approximately 24 milliseconds.</summary>
             INTEGRATION_TIME_24MS = 0xF6,
+            /// <summary>Integration time of approximately 50 milliseconds.</summary>
             INTEGRATION_TIME_50MS = 0xEB,
+            /// <summary>Integration time of approximately 101 milliseconds.</summary>
             INTEGRATION_TIME_101MS = 0xD5,
+            /// <summary>Integration time of approximately 154 milliseconds.</summary>
             INTEGRATION_TIME_154MS = 0xC0,
+            /// <summary>Integration time of approximately 700 milliseconds.</summary>
             INTEGRATION_TIME_700MS = 0x00
         }
 
+        /// <summary>Defines the amplification applied to the sensor's color channels.</summary>
         public enum Gain : byte
         {
-            GAIN_1X = 0x00,   /**<  No gain  */
-            GAIN_4X = 0x01,   /**<  4x gain  */
-            GAIN_16X = 0x02,   /**<  16x gain */
-            GAIN_60X = 0x03    /**<  60x gain */
+            /// <summary>No gain (1x).</summary>
+            GAIN_1X = 0x00,
+            /// <summary>4x gain.</summary>
+            GAIN_4X = 0x01,
+            /// <summary>16x gain.</summary>
+            GAIN_16X = 0x02,
+            /// <summary>60x gain.</summary>
+            GAIN_60X = 0x03
         }
 
         private I2cDevice _device;
@@ -45,6 +59,8 @@ namespace Avans.StatisticalRobot
         private IntegrationTime _integrationTime;
         private Gain _gain;
 
+        /// <summary>Creates a color sensor using 700 ms integration time and 1x gain.</summary>
+        /// <param name="address">The sensor's I2C address.</param>
         public RGBSensor(byte address)
         {
             _device = Robot.CreateI2cDevice(address);
@@ -87,6 +103,7 @@ namespace Avans.StatisticalRobot
             return (ushort)((readBuffer[1] << 8) | readBuffer[0]);
         }
 
+        /// <summary>Powers on the sensor and enables color measurement.</summary>
         public void Enable()
         {
             Write8(TCS34725_ENABLE, TCS34725_ENABLE_PON);
@@ -94,12 +111,15 @@ namespace Avans.StatisticalRobot
             Write8(TCS34725_ENABLE, (byte)(TCS34725_ENABLE_PON | TCS34725_ENABLE_AEN));
         }
 
+        /// <summary>Disables color measurement and powers down the sensor.</summary>
         public void Disable()
         {
             byte reg = Read8(TCS34725_ENABLE);
             Write8(TCS34725_ENABLE, (byte)(reg & ~(TCS34725_ENABLE_PON | TCS34725_ENABLE_AEN)));
         }
 
+        /// <summary>Checks the device ID, applies the configured settings, and enables measurement.</summary>
+        /// <returns>True if the device ID is supported; otherwise, false.</returns>
         public bool Begin()
         {
             byte x = Read8(TCS34725_ID);
@@ -114,6 +134,8 @@ namespace Avans.StatisticalRobot
             return true;
         }
 
+        /// <summary>Sets the color channel amplification, initializing the sensor if needed.</summary>
+        /// <param name="gain">The amplification setting to apply.</param>
         public void SetGain(Gain gain)
         {
             if (!_initialized)
@@ -124,6 +146,8 @@ namespace Avans.StatisticalRobot
             _gain = gain;
         }
 
+        /// <summary>Sets the sample integration time, initializing the sensor if needed.</summary>
+        /// <param name="integrationTime">The time setting to apply to color measurements.</param>
         public void SetIntegrationTime(IntegrationTime integrationTime)
         {
             if (!_initialized)

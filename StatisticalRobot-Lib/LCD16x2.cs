@@ -1,5 +1,6 @@
 ﻿namespace Avans.StatisticalRobot
 {
+    /// <summary>Writes text to a two-line, 16-character I2C LCD.</summary>
     public class LCD16x2 : AbstractLCD
     {
         // Commands

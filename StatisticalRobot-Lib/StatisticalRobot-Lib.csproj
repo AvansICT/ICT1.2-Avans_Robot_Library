@@ -5,6 +5,7 @@
     <RootNamespace>Avans.StatisticalRobot</RootNamespace>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <PlatformTarget>ARM64</PlatformTarget>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageId>Avans.StatisticalRobot</PackageId>

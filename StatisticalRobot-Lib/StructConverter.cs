@@ -7,6 +7,7 @@ using System.Diagnostics;
 // This is probably not the best implementation, the fastest implementation, the most bug-proof implementation, or even the most functional implementation.
 // It's provided as-is for free. Enjoy.
 
+/// <summary>Converts primitive values to and from byte arrays using struct format strings.</summary>
 public class StructConverter
 {
     // We use this function to provide an easier way to type-agnostically call the GetBytes method of the BitConverter class.
@@ -210,6 +211,10 @@ public class StructConverter
 
     }
 
+    /// <summary>Packs supported primitive values into a little-endian byte array.</summary>
+    /// <param name="items">The values to encode, in order.</param>
+    /// <returns>The encoded bytes.</returns>
+    /// <exception cref="ArgumentException">An item has an unsupported type.</exception>
     public static byte[] Pack(object[] items)
     {
         return Pack(items, true, out string _);
